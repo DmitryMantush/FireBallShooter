@@ -6,7 +6,7 @@ window = pygame.display.set_mode((800, 400))
 pygame.display.set_caption("stranger")
 
 x = 50  # start point for avatar
-y = 50  # start point for avatar
+y = 330  # start point for avatar
 width = 40
 height = 60
 velocity = 5
@@ -19,13 +19,13 @@ while run:
             run = False
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] and x > 5:
         x -= velocity
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_RIGHT] and x < 800 - 5 - width:
         x += velocity
-    if keys[pygame.K_UP]:
+    if keys[pygame.K_UP] and y > 5:
         y -= velocity
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_DOWN] and y < 400 - height - 5:
         y += velocity
 
     window.fill((0, 0, 0))
