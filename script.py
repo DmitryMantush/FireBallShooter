@@ -2,21 +2,66 @@ import pygame
 
 pygame.init()
 
-window = pygame.display.set_mode((800, 400))
+window = pygame.display.set_mode((900, 506))
 pygame.display.set_caption("stranger")
 
+walkRight = [
+    pygame.image.load('adventurer-run-00-1.3.png'),
+    pygame.image.load('adventurer-run-01-1.3.png'),
+    pygame.image.load('adventurer-run-02-1.3.png'),
+    pygame.image.load('adventurer-run-03-1.3.png'),
+    pygame.image.load('adventurer-run-04-1.3.png'),
+    pygame.image.load('adventurer-run-05-1.3.png')
+]
+walkLeft = [
+    pygame.image.load('run_left_0.png'),
+    pygame.image.load('run_left_1.png'),
+    pygame.image.load('run_left_2.png'),
+    pygame.image.load('run_left_3.png'),
+    pygame.image.load('run_left_4.png'),
+    pygame.image.load('run_left_5.png')
+]
+bg = pygame.image.load('background.jpg')
+avStand = pygame.image.load('adventurer-idle-00-1.3.png')
+
+timer = pygame.time.Clock()
+
 x = 50  # start point for avatar
-y = 330  # start point for avatar
-width = 40
-height = 60
+y = 415  # start point for avatar
+width = 37
+height = 50
 velocity = 5
 
 jumping = False
 jumpCount = 10
 
+left = False
+right = False
+anmCount = 0
+
+
+def draw_window():
+    global anmCount
+    window.blit(bg, (0, 0))
+
+    if anmCount + 1 >= 30:
+        anmCount = 0
+
+    if left:
+        window.blit(walkLeft[anmCount//5], (x, y))
+        anmCount += 1
+    elif right:
+        window.blit(walkRight[anmCount // 5], (x, y))
+        anmCount += 1
+    else:
+        window.blit(avStand, (x, y))
+
+    pygame.display.update()
+
+
 run = True
 while run:
-    pygame.time.delay(50)
+    timer.tick(30)
     for act in pygame.event.get():
         if act.type == pygame.QUIT:
             run = False
@@ -24,13 +69,17 @@ while run:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and x > 5:
         x -= velocity
-    if keys[pygame.K_RIGHT] and x < 800 - 5 - width:
+        left = True
+        right = False
+    elif keys[pygame.K_RIGHT] and x < 900 - 5 - width:
         x += velocity
+        right = True
+        left = False
+    else:
+        right = False
+        left = False
+        anmCount = 0
     if not jumping:
-        if keys[pygame.K_UP] and y > 5:
-            y -= velocity
-        if keys[pygame.K_DOWN] and y < 400 - height - 5:
-            y += velocity
         if keys[pygame.K_SPACE]:
             jumping = True
     else:
@@ -43,10 +92,7 @@ while run:
         else:
             jumping = False
             jumpCount = 10
+    draw_window()
 
-
-    window.fill((0, 0, 0))
-    pygame.draw.rect(window, (0, 0, 255), (x, y, width, height))
-    pygame.display.update()
 
 pygame.quit()
