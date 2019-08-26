@@ -38,6 +38,20 @@ jumpCount = 10
 left = False
 right = False
 anmCount = 0
+lastMove = 'right'
+
+
+class Bullet:
+    def __init__(self, x, y, radius, color, direction):
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.color = color
+        self.direction = direction
+        self.speed = 8 * direction
+
+    def draw(self, window):
+        pygame.draw.circle(window, self.color, (self.x, self.y), self.radius)
 
 
 def draw_window():
@@ -56,31 +70,52 @@ def draw_window():
     else:
         window.blit(avStand, (x, y))
 
+    for blt in bullets:
+        blt.draw(window)
+
     pygame.display.update()
 
 
 run = True
+bullets = []
+
 while run:
     timer.tick(30)
     for act in pygame.event.get():
         if act.type == pygame.QUIT:
             run = False
 
+    for blt in bullets:
+        if 0 < blt.x < 900:
+            blt.x += blt.speed
+        else:
+            bullets.pop(bullets.index(blt))
+
     keys = pygame.key.get_pressed()
+    if keys[pygame.K_RALT]:
+        if lastMove == 'right':
+            direction = 1
+        else:
+            direction = -1
+        if len(bullets) < 10:
+            bullets.append(Bullet(round(x + width // 2), round(y + height // 2),
+                                  5, (255, 0, 0), direction))
     if keys[pygame.K_LEFT] and x > 5:
         x -= velocity
         left = True
         right = False
+        lastMove = "left"
     elif keys[pygame.K_RIGHT] and x < 900 - 5 - width:
         x += velocity
         right = True
         left = False
+        lastMove = 'right'
     else:
         right = False
         left = False
         anmCount = 0
     if not jumping:
-        if keys[pygame.K_SPACE]:
+        if keys[pygame.K_UP]:
             jumping = True
     else:
         if jumpCount >= -10:
