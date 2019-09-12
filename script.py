@@ -22,6 +22,11 @@ walkLeft = [
     pygame.image.load('run_left_5.png')
 ]
 bg = pygame.image.load('background.jpg')
+flyUp = [
+    pygame.image.load('adventurer-jump-02-1.3.png'),
+    pygame.image.load('adventurer-jump-03-1.3.png')
+]
+fall = pygame.image.load('adventurer-fall-00-1.3.png')
 avStand = pygame.image.load('adventurer-idle-00-1.3.png')
 
 timer = pygame.time.Clock()
@@ -37,6 +42,8 @@ jumpCount = 10
 
 left = False
 right = False
+up = False
+down = False
 anmCount = 0
 lastMove = 'right'
 
@@ -67,6 +74,11 @@ def draw_window():
     elif right:
         window.blit(walkRight[anmCount // 5], (x, y))
         anmCount += 1
+    elif up:
+        window.blit(flyUp[anmCount // 2], (x, y))
+        anmCount += 1
+    elif down:
+        window.blit(fall, (x, y))
     else:
         window.blit(avStand, (x, y))
 
@@ -121,11 +133,17 @@ while run:
         if jumpCount >= -10:
             if jumpCount < 0:
                 y += (jumpCount ** 2) / 2
+                up = True
+                down = False
             else:
                 y -= (jumpCount ** 2) / 2
+                up = False
+                down = True
             jumpCount -= 1
         else:
             jumping = False
+            up = False
+            down = False
             jumpCount = 10
     draw_window()
 
